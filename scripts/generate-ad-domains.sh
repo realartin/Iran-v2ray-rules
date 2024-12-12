@@ -41,7 +41,11 @@ urls=(
 # Downloading each URL, applying cleansing, and appending its content to the category-ads-all-raw.txt file
 for url in "${urls[@]}"; do
   curl -s "$url" | \
-    sed -e 's/^\(|\|\*\|\.\|\-\|0\.0\.0\.0\|127\.0\.0\.1\)*//g' -e 's/\^.*$//g' -e '/!\|?\|@\|#\|\*\|_\|\\\|\/\|\[\|]\|\[\|\([0-9]\{1,3\}\.\)\{3\}[0-9]\{1,3\}/d' -e '/\.$/d' -e '/^\s*$/d' | \
+    sed -e 's/^\(|\|\*\|\.\|\-\|0\.0\.0\.0\|127\.0\.0\.1\|::1\)*//g' \
+        -e 's/\^.*$//g' \
+        -e '/!\|?\|@\|#\|\*\|_\|\\\|\/\|\[\|]\|\[\|\([0-9]\{1,3\}\.\)\{3\}[0-9]\{1,3\}/d' \
+        -e '/\.$/d' \
+        -e '/^\s*$/d' | \
     awk '{$1=$1};1' | dos2unix | idn2 --no-alabelroundtrip --no-tr46 | LC_ALL=C sort -u >> category-ads-all-raw.txt
 done
 
